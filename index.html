@@ -156,9 +156,9 @@
         <div class="wood-title">选择难度</div>
         <div class="hello"><span class="username">小朋友</span>，请选择适合自己的等级</div>
         <div class="level-list">
-            <div class="level-card" onclick="startGame('初级',10000)"><div class="level-info"><h3>初级</h3><p>节奏较慢，适合初次体验。</p></div><div class="stars">⭐☆☆</div></div>
-            <div class="level-card" onclick="startGame('中级',8000)"><div class="level-info"><h3>中级</h3><p>目标切换更快，提升反应能力。</p></div><div class="stars">⭐⭐☆</div></div>
-            <div class="level-card" onclick="startGame('高级',4000)"><div class="level-info"><h3>高级</h3><p>限时挑战，考验快速反应。</p></div><div class="stars">⭐⭐⭐</div></div>
+            <div class="level-card" onclick="startGame('初级',8000)"><div class="level-info"><h3>初级</h3><p>节奏较慢，适合初次体验。</p></div><div class="stars">⭐☆☆</div></div>
+            <div class="level-card" onclick="startGame('中级',6000)"><div class="level-info"><h3>中级</h3><p>目标切换更快，提升反应能力。</p></div><div class="stars">⭐⭐☆</div></div>
+            <div class="level-card" onclick="startGame('高级',3000)"><div class="level-info"><h3>高级</h3><p>限时挑战，考验快速反应。</p></div><div class="stars">⭐⭐⭐</div></div>
         </div>
     </div>
     <BottomDeco></BottomDeco>
@@ -170,7 +170,7 @@
         <div class="top-bar">
             <div class="badge" id="gameMode">专注采摘</div>
             <div class="badge">第 <span id="round">1</span> / 10 轮</div>
-            <div class="badge">⏱ <span id="timeLimit">10</span>s</div>
+            <div class="badge">⏱ <span id="timeLimit">8</span>s</div>
         </div>
         <div class="progress"><div id="progress" class="progress-inner"></div></div>
         <div class="game-area">
@@ -227,7 +227,7 @@
         el.outerHTML='<div class="bottom-deco"><div class="grass"></div><div class="flower f1">🌼</div><div class="leaf f2">🍃</div><div class="mushroom f3">🍄</div><div class="flower f4">🌸</div></div>';
     });
 
-    let userName="小朋友",currentMode="专注采摘",currentLevel="初级",limitTime=10000;
+    let userName="小朋友",currentMode="专注采摘",currentLevel="初级",limitTime=8000;
     let round=1,total=10,target="left",correct=0,wrong=0,leftWrong=0,rightWrong=0;
     let times=[],startTime=0,canClick=true,timer=null,playing=false;
 
@@ -267,21 +267,13 @@
 
     function startGame(level,time){
         stopTraining();
-
         currentLevel=level;
         limitTime=time;
 
-        round=1;
-        correct=0;
-        wrong=0;
-        leftWrong=0;
-        rightWrong=0;
-        times=[];
-        canClick=false;
-        playing=true;
+        round=1;correct=0;wrong=0;leftWrong=0;rightWrong=0;times=[];
+        canClick=false;playing=true;
 
         updateUserName();
-
         gameMode.innerText=currentMode+" · "+currentLevel;
         timeLimit.innerText=Math.round(limitTime/1000);
         document.getElementById("round").innerText=1;
@@ -298,7 +290,6 @@
         }
 
         showPage("game");
-
         speak(userName+"，一起来摘水果");
 
         timer=setTimeout(()=>{
@@ -344,7 +335,6 @@
 
     function answer(choice){
         if(!canClick||!playing)return;
-
         canClick=false;
         clearTimeout(timer);
 
@@ -366,7 +356,7 @@
 
         timer=setTimeout(()=>{
             if(playing) nextRound();
-        },2000);
+        },3000);
     }
 
     function feedbackMsg(text,success){
