@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>果园大作战</title>
+
+    <style>
+        *{box-sizing:border-box}
+        body{margin:0;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#36563b;background:#bfe8f5;overflow:hidden}
+        .page{display:none;height:100vh;padding:14px 16px 76px;position:relative;overflow:hidden;background:radial-gradient(circle at 15% 10%,rgba(255,255,255,.75),transparent 12%),linear-gradient(#9eddf5 0%,#dff7ef 50%,#b9d995 100%)}
+        .page.active{display:flex;justify-content:center;align-items:center}
+        .screen{width:min(100%,980px);height:calc(100vh - 92px);position:relative;z-index:2;padding:12px;display:flex;flex-direction:column;justify-content:center}
+        .mobile-narrow{max-width:430px}
+        .logo{margin:0 auto 12px;width:min(82%,360px);padding:16px 12px;background:#b9824b;border-radius:22px;box-shadow:0 7px 0 #8a5e36;color:#fff4d7;font-size:clamp(42px,7vw,58px);font-weight:900;text-align:center;line-height:1.1}
+        .sub{text-align:center;color:#476a4d;font-weight:800;font-size:clamp(18px,3vw,22px);line-height:1.35;margin-bottom:12px}
+        .name-box{width:min(84%,340px);margin:0 auto 10px;background:rgba(255,248,232,.94);border-radius:18px;padding:12px;box-shadow:0 6px 16px rgba(79,110,62,.16)}
+        .name-box label{display:block;font-weight:900;margin-bottom:8px;color:#4f6b4e;font-size:16px}
+        .name-box input{width:100%;height:42px;border:2px solid #d8c9a6;border-radius:14px;padding:0 12px;font-size:18px;color:#36563b;background:white;outline:none}
+        .wood-title{margin:0 auto 14px;width:fit-content;max-width:92%;padding:10px 26px;background:#b9824b;color:#fff4d7;border-radius:18px;box-shadow:0 6px 0 #8a5e36;font-size:clamp(28px,4vw,38px);font-weight:900;text-align:center}
+        .hello{text-align:center;font-size:clamp(18px,3vw,23px);font-weight:900;color:#4f8b61;margin:0 0 12px}
+        .btn{display:block;width:min(250px,76%);min-height:52px;margin:10px auto;border:0;border-radius:999px;background:#6faf76;color:white;font-size:clamp(22px,3vw,26px);font-weight:900;box-shadow:0 6px 0 #4d8555;cursor:pointer}
+        .btn.light{background:#fff3da;color:#6a5737;box-shadow:0 6px 0 #d6bf91}
+        .back{position:absolute;top:16px;left:16px;width:48px;height:48px;border-radius:50%;border:0;background:#c58b4d;color:white;font-size:28px;font-weight:900;box-shadow:0 4px 0 #8a5e36;cursor:pointer;z-index:4}
+        .mode-list,.level-list{display:grid;gap:12px;width:min(100%,860px);margin:0 auto}
+        .mode-card,.level-card{background:rgba(255,250,231,.94);border-radius:22px;padding:12px;display:flex;align-items:center;box-shadow:0 6px 16px rgba(79,110,62,.16);border:3px solid rgba(255,255,255,.78);cursor:pointer}
+        .pic{width:74px;height:74px;border-radius:18px;background:#d7efd1;display:flex;align-items:center;justify-content:center;font-size:40px;margin-right:12px;flex-shrink:0}
+        .card-text{text-align:left}
+        .card-text h3{margin:0 0 5px;font-size:clamp(22px,3vw,29px);color:#3d6b43}
+        .card-text p{margin:0;color:#6d765f;line-height:1.35;font-size:clamp(14px,2vw,18px)}
+        .arrow{margin-left:auto;font-size:30px;color:#c58b4d}
+        .level-card{justify-content:space-between}
+        .level-info h3{margin:0 0 5px;font-size:clamp(24px,3vw,31px)}
+        .level-info p{margin:0;color:#6d765f;font-size:clamp(15px,2vw,19px)}
+        .stars{color:#e6a735;font-size:clamp(24px,3vw,31px)}
+        .game-panel{width:min(100%,980px)}
+        .top-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+        .badge{background:#fff8e8;padding:8px 15px;border-radius:999px;color:#5f795f;font-size:clamp(16px,2vw,21px);font-weight:900;box-shadow:0 4px 0 #d8c9a6}
+        .progress{height:12px;background:#d4e2d4;border-radius:999px;overflow:hidden;margin-bottom:10px}
+        .progress-inner{height:100%;width:0%;background:#78b88b;transition:.3s}
+        .game-area{height:38vh;min-height:260px;border-radius:26px;overflow:hidden;display:flex;position:relative;background:radial-gradient(circle at 50% 90%,rgba(255,255,255,.5),transparent 26%),linear-gradient(#bfe9f4 0%,#e8f8f5 48%,#cde7be 49%,#b4d99d 100%)}
+        .side{flex:1;position:relative;cursor:pointer}
+        .side.active{background:rgba(255,255,255,.35)}
+        .side+.side{border-left:3px dashed rgba(75,120,80,.25)}
+        .tree{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);width:clamp(125px,18vw,175px);height:clamp(170px,23vw,210px)}
+        .crown{width:100%;height:66%;border-radius:48% 52% 45% 55%;background:#78b88b;box-shadow:-22px 17px 0 #93c99a,22px 17px 0 #68a87b,0 34px 0 #82bd8a}
+        .trunk{width:30px;height:95px;background:#9b7149;border-radius:18px;margin:-24px auto 0}
+        .fruit{width:clamp(68px,10vw,82px);height:clamp(68px,10vw,82px);border-radius:50%;background:radial-gradient(circle at 30% 25%,#ffd4c9,#e96f5c 70%);position:absolute;top:42%;display:flex;justify-content:center;align-items:center;color:white;font-size:30px;font-weight:900;box-shadow:0 12px 24px rgba(180,70,60,.25);animation:pulse 1.3s infinite;z-index:3}
+        .fruit::before{content:"";position:absolute;top:-6px;right:20px;width:18px;height:11px;border-radius:50%;background:#4f8b61;transform:rotate(-25deg)}
+        .fruit.left{left:25%;transform:translateX(-50%)}
+        .fruit.right{right:25%;transform:translateX(50%)}
+        @keyframes pulse{0%,100%{scale:1}50%{scale:1.08}}
+        .instruction{margin-top:10px;padding:9px 15px;background:rgba(255,248,232,.94);border-radius:999px;font-size:clamp(22px,3vw,29px);font-weight:900;text-align:center}
+        .big{font-size:clamp(32px,4vw,40px);color:#4f8b61}
+        .feedback{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:rgba(255,248,232,.96);border-radius:999px;padding:10px 24px;font-size:clamp(22px,3vw,27px);font-weight:900;opacity:0;transition:.2s;z-index:5}
+        .feedback.show{opacity:1}
+        .stats,.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:9px}
+        .stat,.result{border-radius:18px;background:rgba(255,255,255,.78);padding:10px;text-align:center}
+        .num{font-size:clamp(24px,3vw,29px);font-weight:900}
+        .label{color:#708070;margin-top:3px;font-size:14px}
+        .report-card,.record-card{width:min(100%,850px);margin:0 auto;background:rgba(255,250,231,.94);border-radius:26px;padding:14px;box-shadow:0 10px 22px rgba(79,110,62,.18)}
+        .suggestion{margin-top:12px;padding:14px;border-radius:18px;background:#fff8e8;font-size:clamp(17px,2vw,21px);line-height:1.45}
+        .record-list{display:grid;gap:9px;max-height:50vh;overflow:auto;padding-right:4px}
+        .record-item{background:#fff8e8;border-radius:18px;padding:12px;font-size:clamp(16px,2vw,19px);line-height:1.45}
+        .empty{font-size:22px;text-align:center;color:#6d765f;padding:30px}
+        .bottom-deco{position:absolute;left:0;right:0;bottom:0;height:66px;z-index:1;pointer-events:none}
+        .grass{position:absolute;bottom:0;width:100%;height:50px;background:radial-gradient(ellipse at 10% 100%,#6fa85f 0 35%,transparent 36%),radial-gradient(ellipse at 28% 100%,#7dbd6b 0 38%,transparent 39%),radial-gradient(ellipse at 48% 100%,#6da85e 0 34%,transparent 35%),radial-gradient(ellipse at 70% 100%,#83c270 0 39%,transparent 40%),radial-gradient(ellipse at 92% 100%,#6fa85f 0 36%,transparent 37%)}
+        .flower,.leaf,.mushroom{position:absolute;bottom:38px;font-size:22px;animation:floaty 3s ease-in-out infinite}
+        .f1{left:8%}.f2{left:22%;animation-delay:.4s}.f3{left:74%;animation-delay:.8s}.f4{left:88%;animation-delay:1.2s}
+        @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+        @media(max-width:700px){
+            .page{padding:10px 12px 70px}
+            .screen{height:calc(100vh - 80px);padding:8px;justify-content:center}
+            .logo{font-size:40px;width:72%;padding:14px 10px;margin:0 auto 10px;border-radius:20px}
+            .sub{font-size:18px;line-height:1.3;margin-bottom:10px}
+            .name-box{width:80%;padding:10px;margin-bottom:8px}
+            .name-box label{font-size:15px}
+            .name-box input{height:38px;font-size:16px}
+            .btn{width:74%;min-height:48px;font-size:22px;margin:8px auto}
+            .wood-title{font-size:28px;margin-bottom:12px;padding:9px 24px}
+            .hello{font-size:18px;margin-bottom:10px}
+            .back{width:44px;height:44px;font-size:26px;top:12px;left:12px}
+            .mode-list,.level-list{gap:9px}
+            .mode-card,.level-card{padding:9px;border-radius:19px}
+            .pic{width:62px;height:62px;font-size:34px;margin-right:10px}
+            .card-text h3{font-size:22px}
+            .card-text p{font-size:14px}
+            .level-info h3{font-size:22px}
+            .level-info p{font-size:14px}
+            .stars{font-size:22px}
+            .top-bar{flex-direction:row;flex-wrap:wrap;justify-content:center}
+            .badge{font-size:15px;padding:7px 12px}
+            .game-area{height:34vh;min-height:230px;border-radius:22px}
+            .tree{width:118px;height:165px}
+            .trunk{height:80px}
+            .fruit.left{left:50%}
+            .fruit.right{right:50%}
+            .instruction{font-size:21px;padding:8px 12px}
+            .big{font-size:31px}
+            .stats,.result-grid{grid-template-columns:repeat(3,1fr);gap:7px}
+            .stat,.result{padding:8px;border-radius:15px}
+            .num{font-size:20px}
+            .label{font-size:12px}
+            .report-card,.record-card{padding:10px}
+            .suggestion{font-size:15px;padding:10px}
+            .record-list{max-height:46vh}
+            .bottom-deco{height:58px}
+            .grass{height:42px}
+            .flower,.leaf,.mushroom{bottom:32px;font-size:20px}
+        }
+
+        @media(min-width:900px){
+            .mode-list,.level-list{grid-template-columns:repeat(3,1fr)}
+            .mode-card,.level-card{min-height:180px;flex-direction:column;justify-content:center;text-align:center}
+            .pic{margin:0 0 10px}
+            .card-text,.level-info{text-align:center}
+            .arrow{display:none}
+        }
+    </style>
+</head>
+
+<body>
+
+<section id="home" class="page active">
+    <div class="screen mobile-narrow">
+        <div class="logo">果园<br>大作战</div>
+        <div class="sub">训练注意力 · 反应力 · 身体协调</div>
+        <div class="name-box">
+            <label for="nameInput">你希望我们怎么称呼你？</label>
+            <input id="nameInput" type="text" placeholder="例如：叶子 / Tina / 小朋友" maxlength="12">
+        </div>
+        <button class="btn" onclick="startWithName()">开始训练 🍃</button>
+        <button class="btn light" onclick="openRecords()">训练记录 📋</button>
+    </div>
+    <BottomDeco></BottomDeco>
+</section>
+
+<section id="mode" class="page">
+    <button class="back" onclick="safeBack('home')">←</button>
+    <div class="screen">
+        <div class="wood-title">选择训练关卡</div>
+        <div class="hello">你好，<span class="username">小朋友</span>！今天想练哪一项？</div>
+        <div class="mode-list">
+            <div class="mode-card" onclick="selectMode('专注采摘')"><div class="pic">🐿️</div><div class="card-text"><h3>专注采摘</h3><p>根据果子位置，选择左右方向。</p></div><div class="arrow">›</div></div>
+            <div class="mode-card" onclick="selectMode('平衡果园')"><div class="pic">🦌</div><div class="card-text"><h3>平衡果园</h3><p>通过身体移动，保持平衡采摘。</p></div><div class="arrow">›</div></div>
+            <div class="mode-card" onclick="selectMode('听音行动')"><div class="pic">🐤</div><div class="card-text"><h3>听音行动</h3><p>根据语音提示，完成方向判断。</p></div><div class="arrow">›</div></div>
+        </div>
+    </div>
+    <BottomDeco></BottomDeco>
+</section>
+
+<section id="level" class="page">
+    <button class="back" onclick="safeBack('mode')">←</button>
+    <div class="screen">
+        <div class="wood-title">选择难度</div>
+        <div class="hello"><span class="username">小朋友</span>，请选择适合自己的等级</div>
+        <div class="level-list">
+            <div class="level-card" onclick="startGame('初级',10000)"><div class="level-info"><h3>初级</h3><p>节奏较慢，适合初次体验。</p></div><div class="stars">⭐☆☆</div></div>
+            <div class="level-card" onclick="startGame('中级',8000)"><div class="level-info"><h3>中级</h3><p>目标切换更快，提升反应能力。</p></div><div class="stars">⭐⭐☆</div></div>
+            <div class="level-card" onclick="startGame('高级',4000)"><div class="level-info"><h3>高级</h3><p>限时挑战，考验快速反应。</p></div><div class="stars">⭐⭐⭐</div></div>
+        </div>
+    </div>
+    <BottomDeco></BottomDeco>
+</section>
+
+<section id="game" class="page">
+    <button class="back" onclick="safeBack('mode')">←</button>
+    <div class="screen game-panel">
+        <div class="top-bar">
+            <div class="badge" id="gameMode">专注采摘</div>
+            <div class="badge">第 <span id="round">1</span> / 10 轮</div>
+            <div class="badge">⏱ <span id="timeLimit">10</span>s</div>
+        </div>
+        <div class="progress"><div id="progress" class="progress-inner"></div></div>
+        <div class="game-area">
+            <div id="left" class="side" onclick="answer('left')"><div class="tree"><div class="crown"></div><div class="trunk"></div></div></div>
+            <div id="right" class="side" onclick="answer('right')"><div class="tree"><div class="crown"></div><div class="trunk"></div></div></div>
+            <div id="fruit" class="fruit left">●</div>
+            <div id="feedback" class="feedback">摘取成功</div>
+        </div>
+        <div id="instruction" class="instruction">请移动到 <span id="targetText" class="big">左</span> 侧采摘果子</div>
+        <div class="stats">
+            <div class="stat"><div id="correct" class="num">0</div><div class="label">正确次数</div></div>
+            <div class="stat"><div id="wrong" class="num">0</div><div class="label">错误次数</div></div>
+            <div class="stat"><div id="avg" class="num">--</div><div class="label">平均反应</div></div>
+        </div>
+    </div>
+    <BottomDeco></BottomDeco>
+</section>
+
+<section id="report" class="page">
+    <div class="screen">
+        <div class="wood-title">训练结束</div>
+        <div class="hello"><span class="username">小朋友</span>，这是你的训练结果</div>
+        <div class="report-card">
+            <div class="result-grid">
+                <div class="result"><div class="label">训练者</div><div id="rName" class="num">小朋友</div></div>
+                <div class="result"><div class="label">训练模式</div><div id="rMode" class="num">-</div></div>
+                <div class="result"><div class="label">难度</div><div id="rLevel" class="num">-</div></div>
+                <div class="result"><div class="label">正确率</div><div id="rAcc" class="num">0%</div></div>
+                <div class="result"><div class="label">平均反应</div><div id="rAvg" class="num">0ms</div></div>
+                <div class="result"><div class="label">左侧错误</div><div id="rLeft" class="num">0</div></div>
+                <div class="result"><div class="label">右侧错误</div><div id="rRight" class="num">0</div></div>
+            </div>
+            <div id="suggestion" class="suggestion"></div>
+        </div>
+        <button class="btn" onclick="startGame(currentLevel,limitTime)">再来一次</button>
+        <button class="btn light" onclick="safeBack('mode')">返回选关</button>
+        <button class="btn light" onclick="safeBack('home')">返回首页</button>
+    </div>
+    <BottomDeco></BottomDeco>
+</section>
+
+<section id="records" class="page">
+    <button class="back" onclick="safeBack('home')">←</button>
+    <div class="screen">
+        <div class="wood-title">训练记录</div>
+        <div class="record-card"><div id="recordList" class="record-list"></div></div>
+        <button class="btn light" onclick="clearRecords()">清空记录</button>
+    </div>
+    <BottomDeco></BottomDeco>
+</section>
+
+<script>
+    document.querySelectorAll("BottomDeco").forEach(el=>{
+        el.outerHTML='<div class="bottom-deco"><div class="grass"></div><div class="flower f1">🌼</div><div class="leaf f2">🍃</div><div class="mushroom f3">🍄</div><div class="flower f4">🌸</div></div>';
+    });
+
+    let userName="小朋友",currentMode="专注采摘",currentLevel="初级",limitTime=10000;
+    let round=1,total=10,target="left",correct=0,wrong=0,leftWrong=0,rightWrong=0;
+    let times=[],startTime=0,canClick=true,timer=null,playing=false;
+
+    function stopTraining(){
+        clearTimeout(timer);
+        timer=null;
+        canClick=false;
+        playing=false;
+        if("speechSynthesis" in window) speechSynthesis.cancel();
+    }
+
+    function safeBack(id){
+        stopTraining();
+        showPage(id);
+    }
+
+    function startWithName(){
+        const input=document.getElementById("nameInput").value.trim();
+        userName=input||"小朋友";
+        updateUserName();
+        showPage("mode");
+    }
+
+    function updateUserName(){
+        document.querySelectorAll(".username").forEach(el=>el.innerText=userName);
+    }
+
+    function showPage(id){
+        document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+    }
+
+    function selectMode(mode){
+        currentMode=mode;
+        showPage("level");
+    }
+
+    function startGame(level,time){
+        stopTraining();
+
+        currentLevel=level;
+        limitTime=time;
+
+        round=1;
+        correct=0;
+        wrong=0;
+        leftWrong=0;
+        rightWrong=0;
+        times=[];
+        canClick=false;
+        playing=true;
+
+        updateUserName();
+
+        gameMode.innerText=currentMode+" · "+currentLevel;
+        timeLimit.innerText=Math.round(limitTime/1000);
+        document.getElementById("round").innerText=1;
+        progress.style.width="0%";
+        correctEl().innerText=0;
+        wrongEl().innerText=0;
+        avg.innerText="--";
+        feedback.classList.remove("show");
+
+        if(currentMode==="听音行动"){
+            instruction.style.display="none";
+        }else{
+            instruction.style.display="block";
+        }
+
+        showPage("game");
+
+        speak(userName+"，一起来摘水果");
+
+        timer=setTimeout(()=>{
+            if(playing) nextRound();
+        },3000);
+    }
+
+    function nextRound(){
+        clearTimeout(timer);
+        if(!playing)return;
+
+        if(round>total){
+            showReport();
+            return;
+        }
+
+        canClick=true;
+        target=Math.random()>.5?"left":"right";
+
+        fruit.className="fruit "+target;
+
+        if(currentMode==="听音行动"){
+            instruction.style.display="none";
+            targetText.innerText="";
+        }else{
+            instruction.style.display="block";
+            targetText.innerText=target==="left"?"左":"右";
+        }
+
+        left.classList.toggle("active",target==="left");
+        right.classList.toggle("active",target==="right");
+
+        document.getElementById("round").innerText=round;
+        progress.style.width=((round-1)/total)*100+"%";
+
+        if(currentMode==="听音行动"){
+            speak(target==="left"?"左":"右");
+        }
+
+        startTime=Date.now();
+        timer=setTimeout(()=>answer("timeout"),limitTime);
+    }
+
+    function answer(choice){
+        if(!canClick||!playing)return;
+
+        canClick=false;
+        clearTimeout(timer);
+
+        const rt=Date.now()-startTime;
+        times.push(rt);
+
+        if(choice===target){
+            correct++;
+            feedbackMsg("摘取成功！",true);
+        }else{
+            wrong++;
+            if(target==="left")leftWrong++;
+            if(target==="right")rightWrong++;
+            feedbackMsg(choice==="timeout"?"反应超时":"方向不匹配",false);
+        }
+
+        round++;
+        updateStats();
+
+        timer=setTimeout(()=>{
+            if(playing) nextRound();
+        },2000);
+    }
+
+    function feedbackMsg(text,success){
+        feedback.innerText=text;
+        feedback.style.color=success?"#4f8b61":"#c46a4a";
+        feedback.classList.add("show");
+
+        speak(success?"太棒了！":"错了，再试一次！");
+
+        setTimeout(()=>feedback.classList.remove("show"),900);
+    }
+
+    function correctEl(){return document.getElementById("correct")}
+    function wrongEl(){return document.getElementById("wrong")}
+
+    function updateStats(){
+        correctEl().innerText=correct;
+        wrongEl().innerText=wrong;
+
+        if(times.length){
+            avg.innerText=Math.round(times.reduce((a,b)=>a+b,0)/times.length)+"ms";
+        }else{
+            avg.innerText="--";
+        }
+    }
+
+    function showReport(){
+        stopTraining();
+
+        const average=times.length?Math.round(times.reduce((a,b)=>a+b,0)/times.length):0;
+        const acc=Math.round(correct/total*100);
+
+        rName.innerText=userName;
+        rMode.innerText=currentMode;
+        rLevel.innerText=currentLevel;
+        rAcc.innerText=acc+"%";
+        rAvg.innerText=average+"ms";
+        rLeft.innerText=leftWrong;
+        rRight.innerText=rightWrong;
+
+        let text=userName+"，本次左右方向表现较均衡，可以继续保持短时多轮训练。";
+        if(leftWrong>rightWrong)text=userName+"，本次左侧方向反应相对较弱，后续可增加左侧目标训练。";
+        if(rightWrong>leftWrong)text=userName+"，本次右侧方向反应相对较弱，后续可增加右侧目标训练。";
+
+        suggestion.innerText=text;
+
+        saveRecord({
+            name:userName,
+            mode:currentMode,
+            level:currentLevel,
+            acc,
+            avg:average,
+            leftWrong,
+            rightWrong,
+            date:new Date().toLocaleString()
+        });
+
+        showPage("report");
+    }
+
+    function saveRecord(record){
+        const records=JSON.parse(localStorage.getItem("orchardRecords")||"[]");
+        records.unshift(record);
+        localStorage.setItem("orchardRecords",JSON.stringify(records.slice(0,20)));
+    }
+
+    function openRecords(){
+        stopTraining();
+
+        const input=document.getElementById("nameInput").value.trim();
+        if(input){
+            userName=input;
+            updateUserName();
+        }
+
+        const records=JSON.parse(localStorage.getItem("orchardRecords")||"[]");
+
+        recordList.innerHTML=records.length
+            ? records.map(r=>`
+      <div class="record-item">
+        <b>${r.name}</b> · ${r.mode} · ${r.level}<br>
+        正确率：${r.acc}% ｜ 平均反应：${r.avg}ms<br>
+        左错：${r.leftWrong} ｜ 右错：${r.rightWrong}<br>
+        <span style="color:#7a8a72">${r.date}</span>
+      </div>`).join("")
+            : '<div class="empty">还没有训练记录哦 🌱</div>';
+
+        showPage("records");
+    }
+
+    function clearRecords(){
+        localStorage.removeItem("orchardRecords");
+        openRecords();
+    }
+
+    function speak(text){
+        if("speechSynthesis" in window){
+            const msg=new SpeechSynthesisUtterance(text);
+            msg.lang="zh-CN";
+            msg.rate=.75;
+            msg.pitch=1.1;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(msg);
+        }
+    }
+
+    document.addEventListener("keydown",e=>{
+        if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")answer("left");
+        if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")answer("right");
+    });
+</script>
+</body>
+</html>
