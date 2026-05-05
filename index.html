@@ -46,6 +46,7 @@
         .crown{width:100%;height:66%;border-radius:48% 52% 45% 55%;background:#78b88b;box-shadow:-22px 17px 0 #93c99a,22px 17px 0 #68a87b,0 34px 0 #82bd8a}
         .trunk{width:30px;height:95px;background:#9b7149;border-radius:18px;margin:-24px auto 0}
         .fruit{width:clamp(68px,10vw,82px);height:clamp(68px,10vw,82px);border-radius:50%;background:radial-gradient(circle at 30% 25%,#ffd4c9,#e96f5c 70%);position:absolute;top:42%;display:flex;justify-content:center;align-items:center;color:white;font-size:30px;font-weight:900;box-shadow:0 12px 24px rgba(180,70,60,.25);animation:pulse 1.3s infinite;z-index:3}
+        .fruit.green{background:radial-gradient(circle at 30% 25%,#e4ffd8,#6fcf6a 70%);box-shadow:0 12px 24px rgba(80,160,80,.25)}
         .fruit::before{content:"";position:absolute;top:-6px;right:20px;width:18px;height:11px;border-radius:50%;background:#4f8b61;transform:rotate(-25deg)}
         .fruit.left{left:25%;transform:translateX(-50%)}
         .fruit.right{right:25%;transform:translateX(50%)}
@@ -54,6 +55,8 @@
         .big{font-size:clamp(32px,4vw,40px);color:#4f8b61}
         .feedback{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:rgba(255,248,232,.96);border-radius:999px;padding:10px 24px;font-size:clamp(22px,3vw,27px);font-weight:900;opacity:0;transition:.2s;z-index:5}
         .feedback.show{opacity:1}
+        .rule-popup{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;background:rgba(255,248,232,.98);color:#3d6b43;padding:22px 30px;border-radius:24px;font-size:clamp(24px,4vw,34px);font-weight:900;text-align:center;box-shadow:0 10px 30px rgba(70,100,60,.25);border:4px solid rgba(255,255,255,.9)}
+        .rule-popup.show{display:block}
         .stats,.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:9px}
         .stat,.result{border-radius:18px;background:rgba(255,255,255,.78);padding:10px;text-align:center}
         .num{font-size:clamp(24px,3vw,29px);font-weight:900}
@@ -68,55 +71,8 @@
         .flower,.leaf,.mushroom{position:absolute;bottom:38px;font-size:22px;animation:floaty 3s ease-in-out infinite}
         .f1{left:8%}.f2{left:22%;animation-delay:.4s}.f3{left:74%;animation-delay:.8s}.f4{left:88%;animation-delay:1.2s}
         @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-
-        @media(max-width:700px){
-            .page{padding:10px 12px 70px}
-            .screen{height:calc(100vh - 80px);padding:8px;justify-content:center}
-            .logo{font-size:40px;width:72%;padding:14px 10px;margin:0 auto 10px;border-radius:20px}
-            .sub{font-size:18px;line-height:1.3;margin-bottom:10px}
-            .name-box{width:80%;padding:10px;margin-bottom:8px}
-            .name-box label{font-size:15px}
-            .name-box input{height:38px;font-size:16px}
-            .btn{width:74%;min-height:48px;font-size:22px;margin:8px auto}
-            .wood-title{font-size:28px;margin-bottom:12px;padding:9px 24px}
-            .hello{font-size:18px;margin-bottom:10px}
-            .back{width:44px;height:44px;font-size:26px;top:12px;left:12px}
-            .mode-list,.level-list{gap:9px}
-            .mode-card,.level-card{padding:9px;border-radius:19px}
-            .pic{width:62px;height:62px;font-size:34px;margin-right:10px}
-            .card-text h3{font-size:22px}
-            .card-text p{font-size:14px}
-            .level-info h3{font-size:22px}
-            .level-info p{font-size:14px}
-            .stars{font-size:22px}
-            .top-bar{flex-direction:row;flex-wrap:wrap;justify-content:center}
-            .badge{font-size:15px;padding:7px 12px}
-            .game-area{height:34vh;min-height:230px;border-radius:22px}
-            .tree{width:118px;height:165px}
-            .trunk{height:80px}
-            .fruit.left{left:50%}
-            .fruit.right{right:50%}
-            .instruction{font-size:21px;padding:8px 12px}
-            .big{font-size:31px}
-            .stats,.result-grid{grid-template-columns:repeat(3,1fr);gap:7px}
-            .stat,.result{padding:8px;border-radius:15px}
-            .num{font-size:20px}
-            .label{font-size:12px}
-            .report-card,.record-card{padding:10px}
-            .suggestion{font-size:15px;padding:10px}
-            .record-list{max-height:46vh}
-            .bottom-deco{height:58px}
-            .grass{height:42px}
-            .flower,.leaf,.mushroom{bottom:32px;font-size:20px}
-        }
-
-        @media(min-width:900px){
-            .mode-list,.level-list{grid-template-columns:repeat(3,1fr)}
-            .mode-card,.level-card{min-height:180px;flex-direction:column;justify-content:center;text-align:center}
-            .pic{margin:0 0 10px}
-            .card-text,.level-info{text-align:center}
-            .arrow{display:none}
-        }
+        @media(max-width:700px){.page{padding:10px 12px 70px}.screen{height:calc(100vh - 80px);padding:8px;justify-content:center}.logo{font-size:40px;width:72%;padding:14px 10px;margin:0 auto 10px;border-radius:20px}.sub{font-size:18px;line-height:1.3;margin-bottom:10px}.name-box{width:80%;padding:10px;margin-bottom:8px}.name-box label{font-size:15px}.name-box input{height:38px;font-size:16px}.btn{width:74%;min-height:48px;font-size:22px;margin:8px auto}.wood-title{font-size:28px;margin-bottom:12px;padding:9px 24px}.hello{font-size:18px;margin-bottom:10px}.back{width:44px;height:44px;font-size:26px;top:12px;left:12px}.mode-list,.level-list{gap:9px}.mode-card,.level-card{padding:9px;border-radius:19px}.pic{width:62px;height:62px;font-size:34px;margin-right:10px}.card-text h3{font-size:22px}.card-text p{font-size:14px}.level-info h3{font-size:22px}.level-info p{font-size:14px}.stars{font-size:22px}.top-bar{flex-direction:row;flex-wrap:wrap;justify-content:center}.badge{font-size:15px;padding:7px 12px}.game-area{height:34vh;min-height:230px;border-radius:22px}.tree{width:118px;height:165px}.trunk{height:80px}.fruit.left{left:50%}.fruit.right{right:50%}.instruction{font-size:21px;padding:8px 12px}.big{font-size:31px}.stats,.result-grid{grid-template-columns:repeat(3,1fr);gap:7px}.stat,.result{padding:8px;border-radius:15px}.num{font-size:20px}.label{font-size:12px}.report-card,.record-card{padding:10px}.suggestion{font-size:15px;padding:10px}.record-list{max-height:46vh}.bottom-deco{height:58px}.grass{height:42px}.flower,.leaf,.mushroom{bottom:32px;font-size:20px}}
+        @media(min-width:900px){.mode-list,.level-list{grid-template-columns:repeat(3,1fr)}.mode-card,.level-card{min-height:180px;flex-direction:column;justify-content:center;text-align:center}.pic{margin:0 0 10px}.card-text,.level-info{text-align:center}.arrow{display:none}}
     </style>
 </head>
 
@@ -156,9 +112,9 @@
         <div class="wood-title">选择难度</div>
         <div class="hello"><span class="username">小朋友</span>，请选择适合自己的等级</div>
         <div class="level-list">
-            <div class="level-card" onclick="startGame('初级',8000)"><div class="level-info"><h3>初级</h3><p>节奏较慢，适合初次体验。</p></div><div class="stars">⭐☆☆</div></div>
-            <div class="level-card" onclick="startGame('中级',6000)"><div class="level-info"><h3>中级</h3><p>目标切换更快，提升反应能力。</p></div><div class="stars">⭐⭐☆</div></div>
-            <div class="level-card" onclick="startGame('高级',3000)"><div class="level-info"><h3>高级</h3><p>限时挑战，考验快速反应。</p></div><div class="stars">⭐⭐⭐</div></div>
+            <div class="level-card" onclick="startGame('初级')"><div class="level-info"><h3>初级</h3><p>节奏较慢，适合初次体验。</p></div><div class="stars">⭐☆☆</div></div>
+            <div class="level-card" onclick="startGame('中级')"><div class="level-info"><h3>中级</h3><p>目标切换更快，提升反应能力。</p></div><div class="stars">⭐⭐☆</div></div>
+            <div class="level-card" onclick="startGame('高级')"><div class="level-info"><h3>高级</h3><p>限时挑战，考验快速反应。</p></div><div class="stars">⭐⭐⭐</div></div>
         </div>
     </div>
     <BottomDeco></BottomDeco>
@@ -170,7 +126,7 @@
         <div class="top-bar">
             <div class="badge" id="gameMode">专注采摘</div>
             <div class="badge">第 <span id="round">1</span> / 10 轮</div>
-            <div class="badge">⏱ <span id="timeLimit">8</span>s</div>
+            <div class="badge">⏱ <span id="timeLimit">6</span>s</div>
         </div>
         <div class="progress"><div id="progress" class="progress-inner"></div></div>
         <div class="game-area">
@@ -178,6 +134,7 @@
             <div id="right" class="side" onclick="answer('right')"><div class="tree"><div class="crown"></div><div class="trunk"></div></div></div>
             <div id="fruit" class="fruit left">●</div>
             <div id="feedback" class="feedback">摘取成功</div>
+            <div id="rulePopup" class="rule-popup">请不要采摘绿苹果！</div>
         </div>
         <div id="instruction" class="instruction">请移动到 <span id="targetText" class="big">左</span> 侧采摘果子</div>
         <div class="stats">
@@ -205,7 +162,7 @@
             </div>
             <div id="suggestion" class="suggestion"></div>
         </div>
-        <button class="btn" onclick="startGame(currentLevel,limitTime)">再来一次</button>
+        <button class="btn" onclick="startGame(currentLevel)">再来一次</button>
         <button class="btn light" onclick="safeBack('mode')">返回选关</button>
         <button class="btn light" onclick="safeBack('home')">返回首页</button>
     </div>
@@ -227,15 +184,16 @@
         el.outerHTML='<div class="bottom-deco"><div class="grass"></div><div class="flower f1">🌼</div><div class="leaf f2">🍃</div><div class="mushroom f3">🍄</div><div class="flower f4">🌸</div></div>';
     });
 
-    let userName="小朋友",currentMode="专注采摘",currentLevel="初级",limitTime=8000;
+    let userName="小朋友",currentMode="专注采摘",currentLevel="初级",limitTime=6000;
     let round=1,total=10,target="left",correct=0,wrong=0,leftWrong=0,rightWrong=0;
-    let times=[],startTime=0,canClick=true,timer=null,playing=false;
+    let times=[],startTime=0,canClick=true,timer=null,playing=false,fruitType="red";
 
     function stopTraining(){
         clearTimeout(timer);
         timer=null;
         canClick=false;
         playing=false;
+        rulePopup.classList.remove("show");
         if("speechSynthesis" in window) speechSynthesis.cancel();
     }
 
@@ -265,13 +223,27 @@
         showPage("level");
     }
 
-    function startGame(level,time){
+    function getLevelTime(level){
+        if(level==="初级") return 6000;
+        if(level==="中级") return 4000;
+
+        if(level==="高级"){
+            if(currentMode==="专注采摘") return 2000;
+            if(currentMode==="听音行动") return 2000;
+            return 3000;
+        }
+
+        return 6000;
+    }
+
+    function startGame(level){
         stopTraining();
+
         currentLevel=level;
-        limitTime=time;
+        limitTime=getLevelTime(level);
 
         round=1;correct=0;wrong=0;leftWrong=0;rightWrong=0;times=[];
-        canClick=false;playing=true;
+        canClick=false;playing=true;fruitType="red";
 
         updateUserName();
         gameMode.innerText=currentMode+" · "+currentLevel;
@@ -282,19 +254,31 @@
         wrongEl().innerText=0;
         avg.innerText="--";
         feedback.classList.remove("show");
+        fruit.className="fruit left red";
 
         if(currentMode==="听音行动"){
             instruction.style.display="none";
+            left.classList.remove("active");
+            right.classList.remove("active");
         }else{
             instruction.style.display="block";
         }
 
         showPage("game");
-        speak(userName+"，一起来摘水果");
 
-        timer=setTimeout(()=>{
-            if(playing) nextRound();
-        },3000);
+        if(currentMode==="专注采摘" && currentLevel==="高级"){
+            rulePopup.classList.add("show");
+            speak("请不要采摘绿苹果！");
+            timer=setTimeout(()=>{
+                rulePopup.classList.remove("show");
+                if(playing) nextRound();
+            },5000);
+        }else{
+            speak(userName+"，一起来摘水果");
+            timer=setTimeout(()=>{
+                if(playing) nextRound();
+            },3000);
+        }
     }
 
     function nextRound(){
@@ -309,18 +293,27 @@
         canClick=true;
         target=Math.random()>.5?"left":"right";
 
-        fruit.className="fruit "+target;
+        const allowGreenApple=currentMode.trim()==="专注采摘" && currentLevel.trim()==="高级";
+
+        if(allowGreenApple){
+            fruitType=Math.random()<0.35?"green":"red";
+        }else{
+            fruitType="red";
+        }
+
+        fruit.className="fruit "+target+" "+fruitType;
 
         if(currentMode==="听音行动"){
             instruction.style.display="none";
             targetText.innerText="";
+            left.classList.remove("active");
+            right.classList.remove("active");
         }else{
             instruction.style.display="block";
             targetText.innerText=target==="left"?"左":"右";
+            left.classList.toggle("active",target==="left");
+            right.classList.toggle("active",target==="right");
         }
-
-        left.classList.toggle("active",target==="left");
-        right.classList.toggle("active",target==="right");
 
         document.getElementById("round").innerText=round;
         progress.style.width=((round-1)/total)*100+"%";
@@ -341,7 +334,17 @@
         const rt=Date.now()-startTime;
         times.push(rt);
 
-        if(choice===target){
+        if(fruitType==="green"){
+            if(choice==="timeout"){
+                correct++;
+                feedbackMsg("成功避开！",true);
+            }else{
+                wrong++;
+                if(target==="left")leftWrong++;
+                if(target==="right")rightWrong++;
+                feedbackMsg("绿色不能摘！",false);
+            }
+        }else if(choice===target){
             correct++;
             feedbackMsg("摘取成功！",true);
         }else{
@@ -356,7 +359,7 @@
 
         timer=setTimeout(()=>{
             if(playing) nextRound();
-        },3000);
+        },2000);
     }
 
     function feedbackMsg(text,success){
@@ -364,7 +367,13 @@
         feedback.style.color=success?"#4f8b61":"#c46a4a";
         feedback.classList.add("show");
 
-        speak(success?"太棒了！":"错了，再试一次！");
+        if(text==="成功避开！"){
+            speak("做得好，成功避开！");
+        }else if(text==="绿色不能摘！"){
+            speak("绿色苹果不可以采摘！");
+        }else{
+            speak(success?"太棒了！":"错了，再试一次！");
+        }
 
         setTimeout(()=>feedback.classList.remove("show"),900);
     }
@@ -398,8 +407,13 @@
         rRight.innerText=rightWrong;
 
         let text=userName+"，本次左右方向表现较均衡，可以继续保持短时多轮训练。";
-        if(leftWrong>rightWrong)text=userName+"，本次左侧方向反应相对较弱，后续可增加左侧目标训练。";
-        if(rightWrong>leftWrong)text=userName+"，本次右侧方向反应相对较弱，后续可增加右侧目标训练。";
+        if(currentMode==="专注采摘" && currentLevel==="高级"){
+            text=userName+"，本次加入了绿色苹果干扰项，可以训练选择性注意和抑制控制能力。";
+        }else if(leftWrong>rightWrong){
+            text=userName+"，本次左侧方向反应相对较弱，后续可增加左侧目标训练。";
+        }else if(rightWrong>leftWrong){
+            text=userName+"，本次右侧方向反应相对较弱，后续可增加右侧目标训练。";
+        }
 
         suggestion.innerText=text;
 
@@ -454,13 +468,33 @@
 
     function speak(text){
         if("speechSynthesis" in window){
-            const msg=new SpeechSynthesisUtterance(text);
-            msg.lang="zh-CN";
-            msg.rate=.75;
-            msg.pitch=1.1;
             speechSynthesis.cancel();
+
+            const msg=new SpeechSynthesisUtterance(text);
+            const voices=speechSynthesis.getVoices();
+
+            const zhVoice =
+                voices.find(v => v.lang==="zh-CN" && /mandarin|普通话|xiaoxiao|huihui|yaoyao|tingting|hanhan/i.test(v.name)) ||
+                voices.find(v => v.lang==="zh-CN") ||
+                voices.find(v => v.lang && v.lang.toLowerCase().startsWith("zh"));
+
+            if(zhVoice){
+                msg.voice=zhVoice;
+            }
+
+            msg.lang="zh-CN";
+            msg.rate=0.78;
+            msg.pitch=1;
+            msg.volume=1;
+
             speechSynthesis.speak(msg);
         }
+    }
+
+    if("speechSynthesis" in window){
+        speechSynthesis.onvoiceschanged=()=>{
+            speechSynthesis.getVoices();
+        };
     }
 
     document.addEventListener("keydown",e=>{
